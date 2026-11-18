@@ -15,7 +15,7 @@ import urllib.parse
 import urllib.request
 from typing import Any, Mapping
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __all__ = ["DataSportsAPI", "DataSportsAPIError", "__version__"]
 
 DEFAULT_BASE_URL = "https://api.datasportsapi.com"
