@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "Noventra Software Ltd" }]
+authors = [{ name = "DataSportsAPI" }]
 keywords = ["sports", "sports api", "sports data", "live scores", "football", "api client"]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",

@@ -29,4 +29,4 @@ except DataSportsAPIError as e:
 - Python 3.10+.
 - Get a key at <https://datasportsapi.com/signup/>.
 
-MIT licensed. © Noventra Software Ltd.
+MIT licensed. © DataSportsAPI.
