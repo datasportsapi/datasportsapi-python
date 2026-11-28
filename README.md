@@ -166,6 +166,11 @@ ticket's `AuthenticationError` / `PermissionDeniedError`) and the stream is over
 - This is a server-side library. Keep a secret key out of browsers, mobile apps and anything
   else you ship to users.
 
+## Help
+
+Questions, ideas and what you built: the [developer Discord](https://datasportsapi.com/discord) (#python), or
+[hello@datasportsapi.com](mailto:hello@datasportsapi.com). Guide: https://datasportsapi.com/sdks/python/
+
 ## License
 
 MIT. © DataSportsAPI.
