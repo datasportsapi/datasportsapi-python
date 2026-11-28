@@ -18,6 +18,7 @@ class Fixture(TypedDict):
     sport: str
     status: Status
     startTime: str | None
+    endTime: str | None
     league: LeagueRef | None
     season: Season | None
     round: Round | None
@@ -74,8 +75,16 @@ class Fixture(TypedDict):
     stale: bool
     awarded: bool | None
     durations: Durations | None
+    awayFirst: bool | None
+    addedTime: dict[str, float] | None
     lineupsAvailable: bool | None
     lineupsConfirmed: bool | None
+    tiesInRound: int | None
+    xgAvailable: bool | None
+    playerStatisticsAvailable: bool | None
+    playerHeatmapAvailable: bool | None
+    currentBatterId: int | None
+    currentBowlerId: int | None
 
 
 class FixtureSummary(TypedDict):
@@ -218,6 +227,7 @@ class FixturePatch(TypedDict, total=False):
     downAndDistance: FixturePatchDownAndDistance | None
     varCheck: VarCheck | None
     durations: FixturePatchDurations
+    addedTime: dict[str, float | None]
     fightResult: FightResult | None
     homeMembers: list[TeamRef] | None
     awayMembers: list[TeamRef] | None
@@ -347,6 +357,7 @@ class Person(TypedDict):
     prizeMoneySeason: Money | None
     prizeMoneyCareer: Money | None
     fightingStyle: str | None
+    underage: bool | None
 
 
 class LeagueRef(TypedDict):
@@ -494,6 +505,7 @@ class SquadPlayer(TypedDict):
     deceased: bool | None
     previousTeam: TeamRef | None
     joinedOn: str | None
+    club: TeamRef | None
 
 
 class DepthChartEntry(TypedDict):
@@ -641,6 +653,8 @@ class Incident(TypedDict):
     period: PeriodKey | None
     player: PlayerRef | None
     playerName: str | None
+    manager: ManagerRef | None
+    benchMinute: int | None
     assists: list[PlayerRef]
     assistNames: list[str]
     bodyPart: BodyPart | None
@@ -1344,6 +1358,8 @@ class ScorecardInnings(TypedDict):
     bowling: list[ScorecardBowler]
     fallOfWickets: list[FallOfWicket]
     partnerships: list[Partnership]
+    currentBatter: PlayerRef | None
+    currentBowler: PlayerRef | None
 
 
 class ScorecardBatter(TypedDict):
@@ -1439,6 +1455,10 @@ class StandingsRow(TypedDict):
     averageRating: float | None
     noResults: int | None
     netRunRate: float | None
+    pointsPerGame: float | None
+    pointsThisSeason: float | None
+    pointsPreviousSeason: float | None
+    pointsTwoSeasonsAgo: float | None
     form: list[FormResult] | None
 
 
@@ -1603,6 +1623,7 @@ class PlayerLeagueSeasons(TypedDict):
     """A league in which the player has recorded statistics, together with the relevant seasons."""
     league: LeagueRef
     seasons: list[PlayerLeagueSeasonsSeasonsItem]
+    allTimeSeasonId: int | None
 
 
 class PlayerLeagueSeasonsSeasonsItem(TypedDict):
@@ -1636,6 +1657,7 @@ class PlayerFixture(TypedDict):
     sport: str
     status: Status
     startTime: str | None
+    endTime: str | None
     league: LeagueRef | None
     season: Season | None
     round: Round | None
@@ -1692,8 +1714,16 @@ class PlayerFixture(TypedDict):
     stale: bool
     awarded: bool | None
     durations: Durations | None
+    awayFirst: bool | None
+    addedTime: dict[str, float] | None
     lineupsAvailable: bool | None
     lineupsConfirmed: bool | None
+    tiesInRound: int | None
+    xgAvailable: bool | None
+    playerStatisticsAvailable: bool | None
+    playerHeatmapAvailable: bool | None
+    currentBatterId: int | None
+    currentBowlerId: int | None
     playerMatch: PlayerMatch | None
 
 
@@ -1737,6 +1767,8 @@ class RankingRow(TypedDict):
     pointsIfNextWin: float | None
     maxPoints: float | None
     bestPositionAt: str | None
+    rowName: str | None
+    rankingClass: str | None
 
 
 class Category(TypedDict):
@@ -1857,6 +1889,7 @@ class RaceSessionPart(TypedDict):
     name: str
     status: StatusType | None
     startTime: str | None
+    round: int | None
 
 
 class RaceResult(TypedDict):
@@ -2464,6 +2497,7 @@ class TeamRanking(TypedDict):
     tournamentsPlayed: int | None
     pointsIfNextWin: float | None
     maxPoints: float | None
+    rankingClass: str | None
 
 
 class PlayerOfTheSeason(TypedDict):
@@ -3129,9 +3163,9 @@ class LiveWireTeam(TypedDict):
 
 
 class TrackingSummary(TypedDict):
-    """Which tracking data a fixture holds. In football: a ball track and events recorded live (goals, shots, cards, set pieces, the flow of play), completed after the final whistle by the full event list including passes and positions; since 2026-11-23 also a timeline recorded live and, for Bundesliga, 2. Bundesliga and MLS matches, player tracking. In tennis: every serve and every point and the positions of ball and players, all live, and since 2026-11-23 a live match timeline. In basketball: a live timeline with shot spots, events read after the match, and player tracking in NBA games. In ice hockey: a live timeline showing where the shots came from. In darts (since 2026-11-13): a live timeline of every dart and every visit. In table tennis (since 2026-11-24): a live timeline with every point and each game won. In American football (since 2026-11-24): a live timeline of every play with the ball’s spot, down and distance. History starts on 2026-11-07 for every sport."""
+    """Which tracking data a fixture holds. In football: a ball track and events recorded live (goals, shots, cards, set pieces, the flow of play), completed after the final whistle by the full event list including passes and positions, and since 2026-11-23 a timeline recorded live. In tennis: a live ball track and tracked events covering every serve and every point, and since 2026-11-23 a live match timeline. In basketball: a live timeline with shot spots and events read after the match. In ice hockey: a live timeline showing where the shots came from. In darts (since 2026-11-13): a live timeline of every dart and every visit. In table tennis (since 2026-11-24): a live timeline with every point and each game won. In American football (since 2026-11-24): a live timeline of every play with the ball’s spot, down and distance. In baseball (since 2026-11-27): a live timeline of every pitch and play, without positions. History starts on 2026-11-07 for every sport."""
     fixtureId: int
-    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football"]
+    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football", "baseball"]
     coordinates: TrackingCoordinates
     final: bool
     complete: bool
@@ -3139,7 +3173,6 @@ class TrackingSummary(TypedDict):
     ballFrames: int
     events: int
     timelineEvents: int
-    players: bool
 
 
 class TrackingSpot(TypedDict):
@@ -3195,7 +3228,7 @@ class TennisGameScore(TypedDict):
 
 
 class TimelineEvent(TypedDict):
-    """One entry of a match timeline in basketball, ice hockey or darts, since 2026-11-23 football and tennis, and since 2026-11-24 table tennis and American football: shots with where they were taken, saves, penalties, goals, set pieces and periods, and in darts each dart and each visit. Live since 2026-11-13, roughly 5 seconds after the moment (football and tennis about 1–2 seconds; also pushed as timelineEvent frames on tracking:{id}); the source can still revise or withdraw an event afterwards. Events the source withdrew are not included. Football and tennis timelines exist only for matches captured live."""
+    """One entry of a match timeline in basketball, ice hockey or darts, since 2026-11-23 football and tennis, since 2026-11-24 table tennis and American football, and since 2026-11-27 baseball: shots with where they were taken, saves, penalties, goals, set pieces and periods, and in darts each dart and each visit. Live since 2026-11-13, roughly 5 seconds after the moment (football and tennis about 1–2 seconds; also pushed as timelineEvent frames on tracking:{id}); the source can still revise or withdraw an event afterwards. Events the source withdrew are not included. Football and tennis timelines exist only for matches captured live."""
     key: str
     type: str
     name: str | None
@@ -3214,6 +3247,7 @@ class TimelineEvent(TypedDict):
     darts: TimelineDarts | None
     tableTennis: TimelineTableTennis | None
     americanFootball: TimelineAmericanFootball | None
+    baseball: TimelineBaseball | None
 
 
 class TimelineDarts(TypedDict):
@@ -3267,6 +3301,18 @@ class TimelineAmericanFootball(TypedDict):
     players: list[AmericanFootballPlayer]
 
 
+_TimelineBaseballRequired = TypedDict("_TimelineBaseballRequired", {"balls": "int | None", "strikes": "int | None", "outs": "int | None", "bases": "BaseballBases | None", "from": "int | None", "to": "int | None", "runs": "int | None", "half": "BaseballHalf | None", "kind": "str | None"})
+class TimelineBaseball(_TimelineBaseballRequired):
+    """Baseball detail on a timeline entry (since 2026-11-27). The timeline follows the game pitch by pitch and holds no coordinates; each entry says how the count, the outs and the bases stand once it has happened. Anything the event does not concern is left null."""
+
+
+class BaseballBases(TypedDict):
+    """The three bases and whether a runner stands on each."""
+    first: bool
+    second: bool
+    third: bool
+
+
 class AmericanFootballPlayer(TypedDict):
     """Someone who features in an American football play, given by name and role only; there is no id."""
     role: AmericanFootballRole
@@ -3274,48 +3320,12 @@ class AmericanFootballPlayer(TypedDict):
 
 
 class TrackingSnapshot(TypedDict):
-    """Snapshot of a tracking:{id} channel: the summary, the most recent ball frames, tracked events and timeline entries, together with the latest player frame; anything older is available over REST."""
+    """Snapshot of a tracking:{id} channel: the summary and the most recent ball frames, tracked events and timeline entries; anything older is available over REST."""
     fixtureId: int
     tracking: TrackingSummary | None
     ball: list[BallFrame]
     events: list[TrackedEvent]
     timeline: list[TimelineEvent]
-    playerFrame: PlayerFrame | None
-
-
-class PlayerFrame(TypedDict):
-    """A single player-tracking frame (NBA games from 2026-11-13; Bundesliga, 2. Bundesliga and MLS football from 2026-11-23): the ball and all players on the court or pitch, five frames per second. Positions use the sport’s own frame with home attacking towards x = 100 throughout; the teams change ends at half-time, the frame does not. Which way each team plays is worked out per period: in basketball from where its shots go, so a live frame from the opening seconds, before anyone has shot, may come mirrored (frames read again over REST are corrected); in football from its goalkeeper’s position. No frames are kept for half-time (warm-ups are dropped). Recorded live only: a match that was not captured live has no frames."""
-    frame: int
-    at: str
-    period: int
-    clock: int
-    shotClock: float | None
-    running: bool
-    possession: PlayerFramePossession | None
-    ball: PlayerFrameBall | None
-    players: list[PlayerFramePlayer]
-
-
-class PlayerFramePossession(TypedDict):
-    """Ball possession within a player frame."""
-    side: Side
-    player: TrackedPlayer | None
-
-
-class PlayerFrameBall(TypedDict):
-    """Ball position within a player frame."""
-    x: float
-    y: float
-    height: float
-
-
-class PlayerFramePlayer(TypedDict):
-    """One player on the court or pitch, as seen in a player frame. There is no id, because tracked players are not linked to DataSportsAPI player ids; within one match, name, shirt number and side tell them apart."""
-    side: Side | None
-    name: str | None
-    shirtNumber: int | None
-    x: float
-    y: float
 
 
 class WsWelcome(TypedDict):
@@ -3491,7 +3501,7 @@ class WsBall(TypedDict):
     seq: int
     ts: int
     id: int
-    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football"]
+    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football", "baseball"]
     frame: BallFrame
 
 
@@ -3502,7 +3512,7 @@ class WsTrackedEvent(TypedDict):
     seq: int
     ts: int
     id: int
-    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football"]
+    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football", "baseball"]
     event: TrackedEvent
 
 
@@ -3513,20 +3523,10 @@ class WsTimelineEvent(TypedDict):
     seq: int
     ts: int
     id: int
-    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football"]
+    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football", "baseball"]
     op: TimelineOp
     key: str
     event: TimelineEvent | None
-
-
-class WsPlayerFrame(TypedDict):
-    """On tracking:{fixtureId}, NBA games only (since 2026-11-13): one player frame with the ball and every player, five per second, about 1–2 seconds behind play and delivered in batches of five each second. Unlike every other frame it has NO seq and is never replayed: it samples the current state and the newest frame wins. Replace the snapshot’s playerFrame with it, and show the frames of one batch in `frame` order, spacing them 0.2 s. A connection that lags behind receives the newer frames and misses the older ones."""
-    type: Literal["playerFrame"]
-    channel: str
-    ts: int
-    id: int
-    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football"]
-    frame: PlayerFrame
 
 
 class WsTrackingStatus(TypedDict):
@@ -3536,7 +3536,7 @@ class WsTrackingStatus(TypedDict):
     seq: int
     ts: int
     id: int
-    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football"]
+    sport: Literal["football", "tennis", "basketball", "ice-hockey", "darts", "table-tennis", "american-football", "baseball"]
     final: bool
     complete: bool
 
@@ -3713,7 +3713,7 @@ ShotTechnique: TypeAlias = Literal["wrist", "snap", "slap", "backhand", "tipIn",
 
 
 # Football: the phase of play that produced a shot.
-ShotSituation: TypeAlias = Literal["regular", "assisted", "corner", "setPiece", "fastBreak", "freeKick", "throwInSetPiece", "penalty", "shootout", "other"]
+ShotSituation: TypeAlias = Literal["regular", "assisted", "corner", "setPiece", "fastBreak", "freeKick", "throwInSetPiece", "penalty", "shootout", "ownGoal", "other"]
 
 
 # The type of goal a shot produced.
@@ -4028,8 +4028,12 @@ AmericanFootballRole: TypeAlias = Literal["passer", "receiver", "target", "rushe
 TimelineOp: TypeAlias = Literal["upsert", "remove"]
 
 
+# Top or bottom of an inning.
+BaseballHalf: TypeAlias = Literal["top", "bottom"]
+
+
 # Codes that a WebSocket `error` frame can carry.
-WsErrorCode: TypeAlias = Literal["bad_frame", "unknown_channel", "channel_forbidden", "unknown_league", "unknown_fixture", "unknown_race", "unknown_team", "not_subscribed", "too_many_channels", "snapshot_failed", "rate_limited"]
+WsErrorCode: TypeAlias = Literal["bad_frame", "unknown_channel", "channel_forbidden", "unknown_league", "unknown_fixture", "unknown_race", "unknown_team", "history_not_in_plan", "not_subscribed", "too_many_channels", "snapshot_failed", "rate_limited"]
 
 
 # periodN: Regulation period number N. What a period is depends on the sport: a half in football, rugby, handball, futsal, minifootball and bandy; a quarter in basketball, American football, water polo and aussie rules; a period in ice hockey and floorball; a set in tennis, volleyball, table tennis, badminton and padel; an inning in baseball; a round in combat sports; a map / game in esports; a leg / frame block in darts and snooker. inningN: Cricket only: innings number N. extra1: Football and futsal: the opening half of extra time. extra2: Football and futsal: the closing half of extra time. overtime: Every overtime period summed into one value (American football, basketball, handball, ice hockey, water polo, …), as used by scores, status.period and incidents. In baseball it holds the runs scored in extra innings, and only when the source provides no inning-by-inning split (period10, …). overtimeN: Overtime number N, where the source numbers them separately (since 2026-11-23): in match statistics, in play by play and on ice hockey shots. A single overtime is still overtime1, and a basketball game that needs two has overtime1 and overtime2. Scores, status.period and incidents keep the combined `overtime`. penalties: The penalty shoot-out, which appears only as a `status.period` value; its score is kept in ScoreSide.penalties, not under a `periods` key.
@@ -4640,7 +4644,7 @@ class TeamsTransfersResponse(_TeamsTransfersResponseRequired, total=False):
 
 
 class TeamsTransfersMeta(TypedDict, total=False):
-    """meta of GET /v2/teams/{id}/transfers: arrivalCount, departureCount."""
+    """meta of GET /v2/teams/{id}/transfers: arrivalCount, departureCount; historyFrom when your plan's window left older moves out."""
     arrivalCount: int
     departureCount: int
 
@@ -4944,7 +4948,7 @@ class PlayersTransfersResponse(_PlayersTransfersResponseRequired, total=False):
 
 
 class PlayersTransfersMeta(TypedDict, total=False):
-    """meta of GET /v2/players/{id}/transfers: count."""
+    """meta of GET /v2/players/{id}/transfers: count; historyFrom when your plan's window left older moves out."""
     count: int
 
 
@@ -4958,7 +4962,7 @@ class TransfersListResponse(_TransfersListResponseRequired, total=False):
 
 
 class TransfersListMeta(TypedDict, total=False):
-    """meta of GET /v2/transfers: sort, league, position, nationality, minAge, maxAge, page, count, hasNextPage."""
+    """meta of GET /v2/transfers: sort, league, position, nationality, minAge, maxAge, page, count, hasNextPage; historyFrom when your plan's window left older moves out."""
     sort: str
     league: int | None
     position: str | None
@@ -5400,7 +5404,7 @@ class LeaguesTransfersResponse(_LeaguesTransfersResponseRequired, total=False):
 
 
 class LeaguesTransfersMeta(TypedDict, total=False):
-    """meta of GET /v2/leagues/{id}/transfers: league, page, count, hasNextPage."""
+    """meta of GET /v2/leagues/{id}/transfers: league, page, count, hasNextPage; historyFrom when your plan's window left older moves out."""
     league: int
     page: int
     count: int
@@ -6005,7 +6009,7 @@ class AgenciesTransfersResponse(_AgenciesTransfersResponseRequired, total=False)
 
 
 class AgenciesTransfersMeta(TypedDict, total=False):
-    """meta of GET /v2/agencies/{id}/transfers: count."""
+    """meta of GET /v2/agencies/{id}/transfers: count; historyFrom when your plan's window left older moves out."""
     count: int
 
 
@@ -6222,22 +6226,6 @@ class TrackingTimelineResponse(_TrackingTimelineResponseRequired, total=False):
 class TrackingTimelineMeta(TypedDict, total=False):
     """meta of GET /v2/fixtures/{id}/tracking/timeline: count."""
     count: int
-
-
-class _TrackingPlayersResponseRequired(TypedDict):
-    data: list[PlayerFrame]
-
-
-class TrackingPlayersResponse(_TrackingPlayersResponseRequired, total=False):
-    """The answer of GET /v2/fixtures/{id}/tracking/players."""
-    meta: TrackingPlayersMeta
-
-
-class TrackingPlayersMeta(TypedDict, total=False):
-    """meta of GET /v2/fixtures/{id}/tracking/players: count, hasNextPage, next (the after value for the following page, or null)."""
-    count: int
-    hasNextPage: bool
-    next: int | None
 
 
 class ExportsCreateResponse(TypedDict):

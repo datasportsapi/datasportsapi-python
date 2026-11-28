@@ -365,7 +365,7 @@ class _StreamIO:
 
     def _check_seq(self, ws: WebSocket, frame: dict) -> None:
         channel, seq, typ = frame.get("channel"), frame.get("seq"), frame.get("type")
-        if not isinstance(channel, str) or not isinstance(seq, int) or isinstance(seq, bool) or typ == "playerFrame":
+        if not isinstance(channel, str) or not isinstance(seq, int) or isinstance(seq, bool):
             return
         resync = False
         with self.lock:

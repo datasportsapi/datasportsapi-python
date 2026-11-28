@@ -343,7 +343,7 @@ class ConfigTest(Base):
         self.assertEqual(h["Accept"], "application/json")
         self.assertEqual(h["User-Agent"], f"datasportsapi-python/{datasportsapi.__version__}")
         self.assertNotIn("Content-Type", h)
-        self.assertEqual(datasportsapi.__version__, "0.1.0")
+        self.assertEqual(datasportsapi.__version__, "0.2.0")
 
     def test_env_key_and_base_url(self):
         os.environ["DATASPORTSAPI_API_KEY"] = KEY
@@ -651,7 +651,7 @@ class StreamTest(Base):
             conn.send({"type": "fixture", "channel": "livescores", "seq": 4, "ts": 4, "id": 3, "sport": "football", "data": fixture(3)})
             conn.send({"type": "delta", "channel": "fixture:211521", "seq": 2, "ts": 4, "id": 211521, "sport": "football", "changes": {"awayScore": {"current": 2}}})
             conn.send({"type": "pong", "ts": 5})
-            conn.send({"type": "playerFrame", "channel": "fixture:211521", "ts": 5, "id": 211521, "sport": "football", "frame": {}})
+            conn.send({"type": "error", "channel": "fixture:211521", "ts": 5, "code": "channel_forbidden", "message": "x"})
             conn.send({"type": "statistics", "channel": "fixture:211521", "seq": 3, "ts": 6, "id": 211521, "sport": "football", "statistics": []})
             got.put(("unsub", conn.recv()))
             conn.send({"type": "unsubscribed", "channel": "fixture:211521", "ts": 7})
@@ -681,7 +681,7 @@ class StreamTest(Base):
         types = [f["type"] for f in frames]
         self.assertEqual(types[0], "welcome")
         self.assertNotIn("pong", types)
-        self.assertIn("playerFrame", types)
+        self.assertIn("error", types)
         self.assertNotIn("resync", [m.get("type") for m in self.ws.conns[0].received if isinstance(m, dict)])
         msgs = dict(got.get(timeout=3) for _ in range(3))
         self.assertEqual(msgs["subs"], [{"type": "subscribe", "channel": "livescores"}, {"type": "subscribe", "channel": "fixture:211521"}])

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "datasportsapi"
-version = "0.1.0"
+version = "0.2.0"
 description = "Official Python client for the DataSportsAPI sports data API: a typed method per endpoint, sync and asyncio, paging, retries and the live WebSocket stream."
 readme = "README.md"
 requires-python = ">=3.10"

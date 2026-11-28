@@ -1511,7 +1511,7 @@ class OddsResource(_Resource):
 
 
 class TrackingResource(_Resource):
-    """Tracking. Enterprise only. These endpoints are the REST side of the tracking data, and the tracking:{id} WebSocket channel sends the same data as live frames. Two rules hold for all of it. Positions follow the coordinate frame named in TrackingSummary.coordinates, and that frame differs by sport. Darts has no coordinates at all; each dart is placed by the bed it landed in. Tennis uses millimetres, with the centre of the net as the origin. Football, basketball and ice hockey use a 0–100 grid on which the home side attacks towards x = 100 for the whole match. And a player is a name taken from the match squad, with no id. What a match holds depends on its sport. Football: a ball track and events during play (the flow of play, meaning attack, dangerous attack, ball safe and change of possession, and within seconds also goals, shots, cards, substitutions and set pieces), followed after the match by the events with positions and passes. Tennis: the positions of the ball and the players as the match is played, with every serve and point. Basketball and ice hockey: a match timeline with the location of each shot, live since 2026-11-13; basketball has post-match events as well. Darts: a live timeline in which each dart and each visit is an entry (since 2026-11-13). In NBA games the ten players and the ball are located as well, live and five times each second (since 2026-11-13). Since 2026-11-24 table tennis and American football have live timelines too: every point in table tennis, which has no coordinates, and every play in American football, placed on a single axis of yards from the home goal line (field). Tracking has been available since 2026-11-12, for matches from 2026-11-07 on.
+    """Tracking. Enterprise only. These endpoints are the REST side of the tracking data, and the tracking:{id} WebSocket channel sends the same data as live frames. Two rules hold for all of it. Positions follow the coordinate frame named in TrackingSummary.coordinates, and that frame differs by sport. Darts has no coordinates at all; each dart is placed by the bed it landed in. Tennis uses millimetres, with the centre of the net as the origin. Football, basketball and ice hockey use a 0–100 grid on which the home side attacks towards x = 100 for the whole match. Baseball has none either: its entries say where the runners stand, not where anyone is. A player named in tracking data is a name from the match squad, without an id. What a match holds depends on its sport. Football: a ball track and events during play (the flow of play, meaning attack, dangerous attack, ball safe and change of possession, and within seconds also goals, shots, cards, substitutions and set pieces), followed after the match by the events with positions and passes. Tennis: the positions of the ball and the players as the match is played, with every serve and point. Basketball and ice hockey: a match timeline with the location of each shot, live since 2026-11-13; basketball has post-match events as well. Darts: a live timeline in which each dart and each visit is an entry (since 2026-11-13). Since 2026-11-24 table tennis and American football have live timelines too: every point in table tennis, which has no coordinates, and every play in American football, placed on a single axis of yards from the home goal line (field). Baseball joined on 2026-11-27 with a pitch-by-pitch timeline. Live positions of the players are not part of the API: only the live match tracker widget draws them. Tracking has been available since 2026-11-12, for matches from 2026-11-07 on.
     """
 
     def get(self, id: int | str) -> t.TrackingGetResponse:
@@ -1555,14 +1555,6 @@ class TrackingResource(_Resource):
         Docs: https://datasportsapi.com/docs/tracking/timeline/
         """
         return self._client._request("GET", f"/v2/fixtures/{_p(id)}/tracking/timeline", None, None)
-
-    def players(self, id: int | str, *, after: int | None = None, since: str | None = None, limit: int | None = None, fps: Literal[1, 5] | None = None) -> t.TrackingPlayersResponse:
-        """Player tracking.
-
-        Plans: enterprise.
-        Docs: https://datasportsapi.com/docs/tracking/players/
-        """
-        return self._client._request("GET", f"/v2/fixtures/{_p(id)}/tracking/players", {"after": after, "since": since, "limit": limit, "fps": fps}, None)
 
 
 class ExportsResource(_Resource):
@@ -3114,7 +3106,7 @@ class AsyncOddsResource(_Resource):
 
 
 class AsyncTrackingResource(_Resource):
-    """Tracking. Enterprise only. These endpoints are the REST side of the tracking data, and the tracking:{id} WebSocket channel sends the same data as live frames. Two rules hold for all of it. Positions follow the coordinate frame named in TrackingSummary.coordinates, and that frame differs by sport. Darts has no coordinates at all; each dart is placed by the bed it landed in. Tennis uses millimetres, with the centre of the net as the origin. Football, basketball and ice hockey use a 0–100 grid on which the home side attacks towards x = 100 for the whole match. And a player is a name taken from the match squad, with no id. What a match holds depends on its sport. Football: a ball track and events during play (the flow of play, meaning attack, dangerous attack, ball safe and change of possession, and within seconds also goals, shots, cards, substitutions and set pieces), followed after the match by the events with positions and passes. Tennis: the positions of the ball and the players as the match is played, with every serve and point. Basketball and ice hockey: a match timeline with the location of each shot, live since 2026-11-13; basketball has post-match events as well. Darts: a live timeline in which each dart and each visit is an entry (since 2026-11-13). In NBA games the ten players and the ball are located as well, live and five times each second (since 2026-11-13). Since 2026-11-24 table tennis and American football have live timelines too: every point in table tennis, which has no coordinates, and every play in American football, placed on a single axis of yards from the home goal line (field). Tracking has been available since 2026-11-12, for matches from 2026-11-07 on.
+    """Tracking. Enterprise only. These endpoints are the REST side of the tracking data, and the tracking:{id} WebSocket channel sends the same data as live frames. Two rules hold for all of it. Positions follow the coordinate frame named in TrackingSummary.coordinates, and that frame differs by sport. Darts has no coordinates at all; each dart is placed by the bed it landed in. Tennis uses millimetres, with the centre of the net as the origin. Football, basketball and ice hockey use a 0–100 grid on which the home side attacks towards x = 100 for the whole match. Baseball has none either: its entries say where the runners stand, not where anyone is. A player named in tracking data is a name from the match squad, without an id. What a match holds depends on its sport. Football: a ball track and events during play (the flow of play, meaning attack, dangerous attack, ball safe and change of possession, and within seconds also goals, shots, cards, substitutions and set pieces), followed after the match by the events with positions and passes. Tennis: the positions of the ball and the players as the match is played, with every serve and point. Basketball and ice hockey: a match timeline with the location of each shot, live since 2026-11-13; basketball has post-match events as well. Darts: a live timeline in which each dart and each visit is an entry (since 2026-11-13). Since 2026-11-24 table tennis and American football have live timelines too: every point in table tennis, which has no coordinates, and every play in American football, placed on a single axis of yards from the home goal line (field). Baseball joined on 2026-11-27 with a pitch-by-pitch timeline. Live positions of the players are not part of the API: only the live match tracker widget draws them. Tracking has been available since 2026-11-12, for matches from 2026-11-07 on.
 
     The asyncio twin: every method is awaited.
     """
@@ -3160,14 +3152,6 @@ class AsyncTrackingResource(_Resource):
         Docs: https://datasportsapi.com/docs/tracking/timeline/
         """
         return await self._client._request("GET", f"/v2/fixtures/{_p(id)}/tracking/timeline", None, None)
-
-    async def players(self, id: int | str, *, after: int | None = None, since: str | None = None, limit: int | None = None, fps: Literal[1, 5] | None = None) -> t.TrackingPlayersResponse:
-        """Player tracking.
-
-        Plans: enterprise.
-        Docs: https://datasportsapi.com/docs/tracking/players/
-        """
-        return await self._client._request("GET", f"/v2/fixtures/{_p(id)}/tracking/players", {"after": after, "since": since, "limit": limit, "fps": fps}, None)
 
 
 class AsyncExportsResource(_Resource):
